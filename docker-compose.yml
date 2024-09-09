@@ -1,0 +1,35 @@
+services:
+  postgres:
+    image: "postgres:15"
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./.data:/var/lib/postgresql/data
+
+  web:
+    stdin_open: true
+    tty: true
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    env_file:
+      - .envs/development.env
+    volumes:
+      - .:/code:delegated
+    ports:
+      - "8000:8000"
+    depends_on:
+      - postgres
+
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx/Dockerfile
+    ports:
+      - "80:80"
+    volumes:
+      - ./app/staticfiles:/static
+    depends_on:
+      - web
