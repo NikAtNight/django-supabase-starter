@@ -5,3 +5,4 @@
 !nginx
 !base.txt
 !manage.py
+!gunicorn
