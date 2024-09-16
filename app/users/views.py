@@ -40,7 +40,7 @@ class UserViewSet(
         return [*extra_filters]
 
     def get_permissions(self):
-        if self.action == 'create':
+        if self.action in ['create', 'test']:
             return [AllowAny()]
         return [IsAuthenticated()]
 
@@ -69,3 +69,7 @@ class UserViewSet(
         serializer_data = UserSerializer(request.user)
 
         return Response(serializer_data.data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['get'], url_path='test', suffix='test')
+    def test(self, request):
+        return Response('No Autentication Required', status=status.HTTP_200_OK)
